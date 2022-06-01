@@ -1,0 +1,22 @@
+spring.datasource.url: jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1
+spring.datasource.username:
+spring.datasource.password:
+spring.datasource.driverClassName: org.h2.Driver
+spring.jpa.hibernate.ddl-auto: update
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8010/eureka}
+    instance:
+      preferIpAddress: true
+
+spring:
+  application:
+    name: sources-api
+  security:
+    ignored: /**
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://keycloak.pkasila.net/auth/realms/StudyForces
