@@ -28,7 +28,7 @@ public class FileService {
     }
 
     @Async
-    public String findByName(String fileName) throws Exception {
+    public String objectURL(String fileName) throws Exception {
         Map<String, String> reqParams = new HashMap();
         reqParams.put("response-content-type", "application/json");
 
@@ -43,16 +43,19 @@ public class FileService {
     }
 
     @Async
-    public Map<String, String> save(String extension, String contentType) throws Exception {
-        String fileName = UUID.randomUUID().toString() + extension;
-        PostPolicy policy = new PostPolicy(configurationProperties.getBucket(), ZonedDateTime.now().plusDays(1));
+    public String uploadURL(String contentType) throws Exception {
+        String fileName = UUID.randomUUID().toString();
 
-        policy.addEqualsCondition("key", fileName);
-        policy.addStartsWithCondition("Content-Type", contentType);
+        HashMap<String, String> customHeaders = new HashMap<>();
+        customHeaders.put("Content-Type", contentType);
 
-        // Add condition that 'content-length-range' is between 0 to 10MiB.
-        policy.addContentLengthRangeCondition(0, 10 * 1024 * 1024);
-
-        return minioClient.getPresignedPostFormData(policy);
+        return minioClient.getPresignedObjectUrl(
+                        GetPresignedObjectUrlArgs.builder()
+                                .method(Method.PUT)
+                                .bucket(configurationProperties.getBucket())
+                                .object(fileName)
+                                .extraHeaders(customHeaders)
+                                .expiry(1, TimeUnit.DAYS)
+                                .build());
     }
 }
