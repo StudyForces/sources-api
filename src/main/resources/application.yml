@@ -12,6 +12,8 @@ eureka:
       preferIpAddress: true
 
 spring:
+  minio:
+    bucket: sources
   application:
     name: sources-api
   security:
