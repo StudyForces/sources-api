@@ -1,8 +1,6 @@
 package com.studyforces.sourcesapi.services;
 
-import io.minio.GetPresignedObjectUrlArgs;
-import io.minio.MinioClient;
-import io.minio.PostPolicy;
+import io.minio.*;
 import io.minio.http.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +26,21 @@ public class FileService {
     }
 
     @Async
+    public Boolean fileExists(String fileName) {
+        try {
+            StatObjectResponse stat = minioClient.statObject(
+                    StatObjectArgs.builder()
+                            .bucket("my-bucketname")
+                            .object("my-objectname")
+                            .build());
+        } catch(Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Async
     public String objectURL(String fileName) throws Exception {
         Map<String, String> reqParams = new HashMap();
         reqParams.put("response-content-type", "application/json");
@@ -43,9 +56,7 @@ public class FileService {
     }
 
     @Async
-    public String uploadURL(String contentType) throws Exception {
-        String fileName = UUID.randomUUID().toString();
-
+    public String uploadURL(String fileName, String contentType) throws Exception {
         HashMap<String, String> customHeaders = new HashMap<>();
         customHeaders.put("Content-Type", contentType);
 
