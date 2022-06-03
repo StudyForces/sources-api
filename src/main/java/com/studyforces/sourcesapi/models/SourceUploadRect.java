@@ -1,22 +1,10 @@
 package com.studyforces.sourcesapi.models;
 
-import javax.persistence.*;
+import javax.persistence.Embeddable;
 
-@Entity
+@Embeddable
 public class SourceUploadRect {
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    @Basic
     private Double x;
 
     public Double getX() {
@@ -27,7 +15,6 @@ public class SourceUploadRect {
         this.x = x;
     }
 
-    @Basic
     private Double y;
 
     public Double getY() {
@@ -38,7 +25,6 @@ public class SourceUploadRect {
         this.y = y;
     }
 
-    @Basic
     private Double width;
 
     public Double getWidth() {
@@ -49,7 +35,6 @@ public class SourceUploadRect {
         this.width = width;
     }
 
-    @Basic
     private Double height;
 
     public Double getHeight() {
@@ -60,18 +45,6 @@ public class SourceUploadRect {
         this.height = height;
     }
 
-    @ManyToOne
-    private SourceUpload upload;
-
-    public SourceUpload getUpload() {
-        return upload;
-    }
-
-    public void setUpload(SourceUpload upload) {
-        this.upload = upload;
-    }
-
-    @Enumerated(EnumType.STRING)
     private SourceUploadRectType type;
 
     public SourceUploadRectType getType() {
@@ -82,7 +55,6 @@ public class SourceUploadRect {
         this.type = type;
     }
 
-    @Enumerated(EnumType.ORDINAL)
     private SourceUploadRectStatus status;
 
     public SourceUploadRectStatus getStatus() {

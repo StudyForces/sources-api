@@ -28,7 +28,7 @@ public class SourceUpload {
         this.sourceFile = sourceFile;
     }
 
-    @OneToMany
+    @ElementCollection
     private Set<SourceUploadRect> rects;
 
     public Set<SourceUploadRect> getRects() {

@@ -25,7 +25,7 @@ public class UploadController {
     }
 
     @PostMapping("/request")
-    Map<String, String> getPresignedUpload(@RequestHeader("Content-Type") String contentType) throws Exception {
+    Map<String, String> requestUploadURL(@RequestHeader("Content-Type") String contentType) throws Exception {
         HashMap<String, String> res = new HashMap<>();
         String fileName = UUID.randomUUID().toString();
         res.put("fileName", fileName);
@@ -34,8 +34,8 @@ public class UploadController {
         return res;
     }
 
-    @PostMapping("/saveSource")
-    SourceUpload saveSource(@RequestBody SaveSourceRequest req) throws UploadControllerException {
+    @PostMapping("/save")
+    SourceUpload saveSource(@RequestBody SaveSourceRequest req) throws Exception {
         if (!fileService.fileExists(req.getFileName())) {
             throw new UploadControllerException("File doesn't exist");
         }

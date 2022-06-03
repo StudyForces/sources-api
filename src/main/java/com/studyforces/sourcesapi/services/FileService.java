@@ -30,8 +30,8 @@ public class FileService {
         try {
             StatObjectResponse stat = minioClient.statObject(
                     StatObjectArgs.builder()
-                            .bucket("my-bucketname")
-                            .object("my-objectname")
+                            .bucket(configurationProperties.getBucket())
+                            .object(fileName)
                             .build());
         } catch(Exception e) {
             return false;
