@@ -6,8 +6,6 @@ import com.studyforces.sourcesapi.services.OCRService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.transform.Source;
-
 @RestController
 @RequestMapping("/ocr")
 @PreAuthorize("hasRole('editor')")
