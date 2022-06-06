@@ -10,6 +10,7 @@ import com.studyforces.sourcesapi.services.messages.OCRResponseMessage;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -17,6 +18,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@Transactional
 @Service
 public class OCRService {
 
@@ -38,6 +40,7 @@ public class OCRService {
             OCRRequestMessage msg = new OCRRequestMessage();
             msg.setSourceUploadID(upload.getId());
             msg.setSourceUploadURL(fileService.objectURL(upload.getSourceFile()));
+            msg.setRect(rect);
             unboundedTexts.offer(msg);
         }
 

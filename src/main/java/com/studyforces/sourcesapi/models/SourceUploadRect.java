@@ -1,12 +1,8 @@
 package com.studyforces.sourcesapi.models;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.studyforces.sourcesapi.support.JpaConverterJson;
 
-import javax.persistence.Convert;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import java.util.Map;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Embeddable
@@ -52,6 +48,7 @@ public class SourceUploadRect {
         this.height = height;
     }
 
+    @Enumerated(EnumType.STRING)
     private SourceUploadRectType type;
 
     public SourceUploadRectType getType() {
@@ -62,6 +59,7 @@ public class SourceUploadRect {
         this.type = type;
     }
 
+    @Enumerated(EnumType.STRING)
     private SourceUploadRectStatus status;
 
     public SourceUploadRectStatus getStatus() {
