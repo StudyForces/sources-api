@@ -1,8 +1,8 @@
-package com.studyforces.sourcesapi.services;
+package com.studyforces.sourcesapi.services.messages;
 
 import com.studyforces.sourcesapi.models.SourceUploadRect;
 
-public class OCRMessage {
+public class OCRResponseMessage<T> {
     private Long sourceUploadID;
 
     public Long getSourceUploadID() {
@@ -13,16 +13,6 @@ public class OCRMessage {
         this.sourceUploadID = sourceUploadID;
     }
 
-    private String sourceUploadURL;
-
-    public String getSourceUploadURL() {
-        return sourceUploadURL;
-    }
-
-    public void setSourceUploadURL(String sourceUploadURL) {
-        this.sourceUploadURL = sourceUploadURL;
-    }
-
     private SourceUploadRect rect;
 
     public SourceUploadRect getRect() {
@@ -31,5 +21,15 @@ public class OCRMessage {
 
     public void setRect(SourceUploadRect rect) {
         this.rect = rect;
+    }
+
+    private T data;
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
     }
 }
