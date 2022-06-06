@@ -22,8 +22,7 @@ public class OCRController {
     @PostMapping("/request/{id}")
     SourceUpload requestOCR(@PathVariable Long id) throws Exception {
         SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow();
-        this.ocrService.runOCR(upload);
-        return sourceUploadRepository.save(upload);
+        return this.ocrService.runOCR(upload);
     }
 
 }

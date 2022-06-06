@@ -1,6 +1,13 @@
 package com.studyforces.sourcesapi.models;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.studyforces.sourcesapi.support.JpaConverterJson;
+
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
+import java.util.Map;
+import java.util.Objects;
 
 @Embeddable
 public class SourceUploadRect {
@@ -63,5 +70,29 @@ public class SourceUploadRect {
 
     public void setStatus(SourceUploadRectStatus status) {
         this.status = status;
+    }
+
+    private Object data;
+
+    @Convert(converter = JpaConverterJson.class)
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SourceUploadRect that = (SourceUploadRect) o;
+        return getX().equals(that.getX()) && getY().equals(that.getY()) && getWidth().equals(that.getWidth()) && getHeight().equals(that.getHeight()) && getType() == that.getType();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getX(), getY(), getWidth(), getHeight(), getType());
     }
 }
