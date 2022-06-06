@@ -12,6 +12,14 @@ eureka:
       preferIpAddress: true
 
 spring:
+  cloud:
+    stream:
+      function.definition: textSupplier;textSink
+      bindings:
+        textSink-in-0:
+          destination: ocr-text-result
+        textSupplier-out-0:
+          destination: ocr-text-source
   minio:
     bucket: sources
   application:
