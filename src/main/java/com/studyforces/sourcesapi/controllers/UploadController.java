@@ -8,6 +8,7 @@ import com.studyforces.sourcesapi.services.FileService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -44,5 +45,14 @@ public class UploadController {
         upload.setSourceFile(req.getFileName());
 
         return sourceUploadRepository.save(upload);
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/view/{id}")
+    public void method(HttpServletResponse httpServletResponse, @PathVariable Long id) throws Exception {
+        SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow();
+
+        httpServletResponse.setHeader("Location", fileService.objectURL(upload.getSourceFile()));
+        httpServletResponse.setStatus(302);
     }
 }

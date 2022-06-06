@@ -40,16 +40,12 @@ public class FileService {
 
     @Async
     public String objectURL(String fileName) throws Exception {
-        Map<String, String> reqParams = new HashMap();
-        reqParams.put("response-content-type", "application/json");
-
         return minioClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
                         .method(Method.GET)
                         .bucket(configurationProperties.getBucket())
                         .object(fileName)
                         .expiry(1, TimeUnit.HOURS)
-                        .extraQueryParams(reqParams)
                         .build());
     }
 
