@@ -28,7 +28,7 @@ public class SourceUpload {
         this.sourceFile = sourceFile;
     }
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<SourceUploadRect> rects;
 
     public Set<SourceUploadRect> getRects() {
