@@ -72,6 +72,7 @@ public class SourceUploadRect {
 
     private Object data;
 
+    @Column(columnDefinition = "LONGTEXT")
     @Convert(converter = JpaConverterJson.class)
     public Object getData() {
         return data;
