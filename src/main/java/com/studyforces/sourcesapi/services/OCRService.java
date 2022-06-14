@@ -4,6 +4,7 @@ import com.studyforces.sourcesapi.models.SourceUpload;
 import com.studyforces.sourcesapi.models.SourceUploadRect;
 import com.studyforces.sourcesapi.models.SourceUploadRectStatus;
 import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
+import com.studyforces.sourcesapi.services.messages.OCRDataFormula;
 import com.studyforces.sourcesapi.services.messages.OCRDataText;
 import com.studyforces.sourcesapi.services.messages.OCRRequestMessage;
 import com.studyforces.sourcesapi.services.messages.OCRResponseMessage;
@@ -31,6 +32,7 @@ public class OCRService {
     SourceUploadRepository sourceUploadRepository;
 
     BlockingQueue<OCRRequestMessage> unboundedTexts = new LinkedBlockingQueue<>();
+    BlockingQueue<OCRRequestMessage> unboundedFormulas = new LinkedBlockingQueue<>();
 
     public SourceUpload runOCR(@NotNull SourceUpload upload) throws Exception {
         List<SourceUploadRect> rects = upload.getRects().stream().toList();
@@ -41,7 +43,10 @@ public class OCRService {
             msg.setSourceUploadID(upload.getId());
             msg.setSourceUploadURL(fileService.objectURL(upload.getSourceFile()));
             msg.setRect(rect);
-            unboundedTexts.offer(msg);
+            switch (rect.getType()) {
+                case TEXT -> unboundedTexts.offer(msg);
+                case FORMULA -> unboundedFormulas.offer(msg);
+            }
         }
 
         this.sourceUploadRepository.save(upload);
@@ -55,20 +60,32 @@ public class OCRService {
     }
 
     @Bean
-    public Consumer<OCRResponseMessage<OCRDataText>> textSink() {
-        return msg -> {
-            SourceUpload upload = this.sourceUploadRepository.findById(msg.getSourceUploadID()).orElseThrow();
+    public Supplier<OCRRequestMessage> formulaSupplier() {
+        return () -> unboundedFormulas.poll();
+    }
 
-            for (SourceUploadRect rect : upload.getRects()) {
-                if (rect.equals(msg.getRect())) {
-                    rect.setStatus(SourceUploadRectStatus.DONE);
-                    rect.setData(msg.getData());
-                    break;
-                }
+    private <T> void processSinked(OCRResponseMessage<T> msg) {
+        SourceUpload upload = this.sourceUploadRepository.findById(msg.getSourceUploadID()).orElseThrow();
+
+        for (SourceUploadRect rect : upload.getRects()) {
+            if (rect.equals(msg.getRect())) {
+                rect.setStatus(SourceUploadRectStatus.DONE);
+                rect.setData(msg.getData());
+                break;
             }
+        }
 
-            this.sourceUploadRepository.save(upload);
-        };
+        this.sourceUploadRepository.save(upload);
+    }
+
+    @Bean
+    public Consumer<OCRResponseMessage<OCRDataText>> textSink() {
+        return this::processSinked;
+    }
+
+    @Bean
+    public Consumer<OCRResponseMessage<OCRDataFormula>> formulaSink() {
+        return this::processSinked;
     }
 
 }
