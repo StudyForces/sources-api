@@ -14,12 +14,16 @@ eureka:
 spring:
   cloud:
     stream:
-      function.definition: textSupplier;textSink
+      function.definition: textSupplier;textSink;formulaSupplier;formulaSink
       bindings:
         textSink-in-0:
           destination: ocr-text-result
         textSupplier-out-0:
           destination: ocr-text-source
+        formulaSink-in-0:
+          destination: ocr-formula-result
+        formulaSupplier-out-0:
+          destination: ocr-formula-source
   minio:
     bucket: sources
   application:
