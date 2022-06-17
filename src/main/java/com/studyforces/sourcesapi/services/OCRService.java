@@ -24,15 +24,12 @@ import java.util.function.Supplier;
 @Service
 public class OCRService {
 
-    OCRService(FileService fileService, SourceUploadRepository sourceUploadRepository,
-               OCRResultRepository ocrResultRepository) {
+    OCRService(FileService fileService, OCRResultRepository ocrResultRepository) {
         this.fileService = fileService;
-        this.sourceUploadRepository = sourceUploadRepository;
         this.ocrResultRepository = ocrResultRepository;
     }
 
     FileService fileService;
-    SourceUploadRepository sourceUploadRepository;
     OCRResultRepository ocrResultRepository;
 
     BlockingQueue<OCRRequestMessage> unboundedTexts = new LinkedBlockingQueue<>();
