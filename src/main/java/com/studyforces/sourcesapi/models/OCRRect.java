@@ -1,7 +1,6 @@
 package com.studyforces.sourcesapi.models;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Embeddable
 public class OCRRect {

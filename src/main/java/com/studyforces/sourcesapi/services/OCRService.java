@@ -4,7 +4,6 @@ import com.studyforces.sourcesapi.models.OCRResult;
 import com.studyforces.sourcesapi.models.SourceUpload;
 import com.studyforces.sourcesapi.models.OCRResultStatus;
 import com.studyforces.sourcesapi.repositories.OCRResultRepository;
-import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
 import com.studyforces.sourcesapi.services.messages.OCRDataFormula;
 import com.studyforces.sourcesapi.services.messages.OCRDataText;
 import com.studyforces.sourcesapi.services.messages.OCRRequestMessage;
