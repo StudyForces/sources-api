@@ -1,26 +1,14 @@
 package com.studyforces.sourcesapi.services.messages;
 
-import com.studyforces.sourcesapi.models.SourceUploadRect;
-
 public class OCRResponseMessage<T> {
-    private Long sourceUploadID;
+    private Long ocrResultID;
 
-    public Long getSourceUploadID() {
-        return sourceUploadID;
+    public Long getOcrResultID() {
+        return this.ocrResultID;
     }
 
-    public void setSourceUploadID(Long sourceUploadID) {
-        this.sourceUploadID = sourceUploadID;
-    }
-
-    private SourceUploadRect rect;
-
-    public SourceUploadRect getRect() {
-        return rect;
-    }
-
-    public void setRect(SourceUploadRect rect) {
-        this.rect = rect;
+    public void setOcrResultID(Long ocrResultID) {
+        this.ocrResultID = ocrResultID;
     }
 
     private T data;

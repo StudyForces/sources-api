@@ -1,5 +1,5 @@
 package com.studyforces.sourcesapi.models;
 
-public enum SourceUploadRectStatus {
+public enum OCRResultStatus {
     PENDING, DONE
 }

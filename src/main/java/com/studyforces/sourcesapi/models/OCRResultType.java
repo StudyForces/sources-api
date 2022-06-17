@@ -1,5 +1,5 @@
 package com.studyforces.sourcesapi.models;
 
-public enum SourceUploadRectType {
+public enum OCRResultType {
     TEXT, FORMULA
 }

@@ -15,6 +15,7 @@ public class RestConfig implements RepositoryRestConfigurer {
         config.setDefaultMediaType(MediaType.APPLICATION_JSON);
         config.useHalAsDefaultJsonMediaType(false);
         config.exposeIdsFor(SourceUpload.class);
-        config.exposeIdsFor(SourceUploadRect.class);
+        config.exposeIdsFor(OCRResult.class);
+        config.exposeIdsFor(OCRRect.class);
     }
 }
