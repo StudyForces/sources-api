@@ -36,6 +36,7 @@ public class SourceUpload {
     }
 
     public void setOcrResults(Set<OCRResult> ocrResults) {
-        this.ocrResults = ocrResults;
+        this.ocrResults.clear();
+        this.ocrResults.addAll(ocrResults);
     }
 }
