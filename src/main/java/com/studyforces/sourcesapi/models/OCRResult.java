@@ -62,6 +62,7 @@ public class OCRResult {
     }
 
     @ManyToOne
+    @JoinColumn(name = "source_upload_id")
     private SourceUpload sourceUpload;
 
     public SourceUpload getSourceUpload() {
