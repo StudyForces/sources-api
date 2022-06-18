@@ -28,14 +28,14 @@ public class SourceUpload {
         this.sourceFile = sourceFile;
     }
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<SourceUploadRect> rects;
+    @OneToMany
+    private Set<OCRResult> ocrResults;
 
-    public Set<SourceUploadRect> getRects() {
-        return rects;
+    public Set<OCRResult> getOcrResults() {
+        return ocrResults;
     }
 
-    public void setRects(Set<SourceUploadRect> rects) {
-        this.rects = rects;
+    public void setOcrResults(Set<OCRResult> ocrResults) {
+        this.ocrResults = ocrResults;
     }
 }
