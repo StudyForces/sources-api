@@ -15,7 +15,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/upload")
-@PreAuthorize("hasRole('editor')")
 public class UploadController {
     private final FileService fileService;
     private final SourceUploadRepository sourceUploadRepository;

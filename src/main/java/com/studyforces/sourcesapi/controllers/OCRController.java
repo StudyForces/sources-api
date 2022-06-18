@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/ocr")
-@PreAuthorize("hasRole('editor')")
 public class OCRController {
 
     private final OCRService ocrService;
