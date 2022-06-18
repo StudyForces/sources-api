@@ -4,7 +4,9 @@ import com.studyforces.sourcesapi.exceptions.UploadControllerException;
 import com.studyforces.sourcesapi.models.SourceUpload;
 import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
 import com.studyforces.sourcesapi.requests.SaveSourceRequest;
+import com.studyforces.sourcesapi.responses.FileInfoResponse;
 import com.studyforces.sourcesapi.services.FileService;
+import io.minio.StatObjectResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,12 +48,26 @@ public class UploadController {
         return sourceUploadRepository.save(upload);
     }
 
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasRole('editor')")
     @GetMapping("/view/{id}")
     public void method(HttpServletResponse httpServletResponse, @PathVariable Long id) throws Exception {
         SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow();
 
         httpServletResponse.setHeader("Location", fileService.objectURL(upload.getSourceFile()));
         httpServletResponse.setStatus(302);
+    }
+
+    @PreAuthorize("hasRole('editor')")
+    @GetMapping("/info/{id}")
+    FileInfoResponse fileInfo(@PathVariable Long id) throws Exception {
+        SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow();
+
+        StatObjectResponse stat = fileService.fileInfo(upload.getSourceFile());
+
+        return FileInfoResponse.builder()
+                .contentType(stat.contentType())
+                .size(stat.size())
+                .lastModified(stat.lastModified().toEpochSecond())
+                .build();
     }
 }

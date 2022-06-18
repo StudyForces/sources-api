@@ -39,6 +39,15 @@ public class FileService {
     }
 
     @Async
+    public StatObjectResponse fileInfo(String fileName) throws Exception {
+        return minioClient.statObject(
+                StatObjectArgs.builder()
+                        .bucket(configurationProperties.getBucket())
+                        .object(fileName)
+                        .build());
+    }
+
+    @Async
     public String objectURL(String fileName) throws Exception {
         return minioClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
