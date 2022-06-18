@@ -28,7 +28,7 @@ public class SourceUpload {
         this.sourceFile = sourceFile;
     }
 
-    @OneToMany(mappedBy = "sourceUpload")
+    @OneToMany
     private Set<OCRResult> ocrResults;
 
     public Set<OCRResult> getOcrResults() {
@@ -36,7 +36,6 @@ public class SourceUpload {
     }
 
     public void setOcrResults(Set<OCRResult> ocrResults) {
-        this.ocrResults.clear();
-        this.ocrResults.addAll(ocrResults);
+        this.ocrResults = ocrResults;
     }
 }
