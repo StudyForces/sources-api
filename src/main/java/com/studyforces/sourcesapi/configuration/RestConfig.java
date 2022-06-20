@@ -17,5 +17,6 @@ public class RestConfig implements RepositoryRestConfigurer {
         config.exposeIdsFor(SourceUpload.class);
         config.exposeIdsFor(OCRResult.class);
         config.exposeIdsFor(OCRRect.class);
+        config.exposeIdsFor(Problem.class);
     }
 }

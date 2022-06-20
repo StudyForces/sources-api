@@ -1,6 +1,7 @@
 package com.studyforces.sourcesapi.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class OCRResult {
@@ -70,5 +71,16 @@ public class OCRResult {
 
     public void setSourceUpload(SourceUpload sourceUpload) {
         this.sourceUpload = sourceUpload;
+    }
+
+    @ManyToOne
+    private Problem problem;
+
+    public Problem getProblem() {
+        return problem;
+    }
+
+    public void setProblem(Problem problem) {
+        this.problem = problem;
     }
 }
