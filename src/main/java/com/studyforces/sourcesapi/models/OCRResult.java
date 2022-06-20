@@ -63,6 +63,7 @@ public class OCRResult {
     }
 
     @ManyToOne
+    @JoinColumn(name="source_upload_id")
     private SourceUpload sourceUpload;
 
     public SourceUpload getSourceUpload() {
@@ -74,6 +75,7 @@ public class OCRResult {
     }
 
     @ManyToOne
+    @JoinColumn(name="problem_id")
     private Problem problem;
 
     public Problem getProblem() {

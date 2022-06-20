@@ -75,7 +75,7 @@ public class Problem {
         this.coreId = coreId;
     }
 
-    @OneToMany
+    @OneToMany(mappedBy = "problem")
     private Set<OCRResult> ocrResults;
 
     public Set<OCRResult> getOcrResults() {

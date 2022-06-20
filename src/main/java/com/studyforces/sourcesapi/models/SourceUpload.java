@@ -28,7 +28,7 @@ public class SourceUpload {
         this.sourceFile = sourceFile;
     }
 
-    @OneToMany
+    @OneToMany(mappedBy = "sourceUpload")
     private Set<OCRResult> ocrResults;
 
     public Set<OCRResult> getOcrResults() {
