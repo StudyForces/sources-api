@@ -75,7 +75,8 @@ public class Problem {
         this.coreId = coreId;
     }
 
-    @OneToMany(mappedBy = "problem")
+    @OneToMany(mappedBy = "problem",
+               cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     private Set<OCRResult> ocrResults;
 
     public Set<OCRResult> getOcrResults() {
