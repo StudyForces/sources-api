@@ -28,8 +28,7 @@ public class SourceUpload {
         this.sourceFile = sourceFile;
     }
 
-    @OneToMany(mappedBy = "sourceUpload",
-               cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
+    @OneToMany(mappedBy = "sourceUpload")
     private Set<OCRResult> ocrResults;
 
     public Set<OCRResult> getOcrResults() {
