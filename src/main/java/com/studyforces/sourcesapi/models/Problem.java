@@ -1,6 +1,7 @@
 package com.studyforces.sourcesapi.models;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -84,5 +85,16 @@ public class Problem {
 
     public void setOcrResults(Set<OCRResult> ocrResults) {
         this.ocrResults = ocrResults;
+    }
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<ProblemAttachment> attachments;
+
+    public List<ProblemAttachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<ProblemAttachment> attachments) {
+        this.attachments = attachments;
     }
 }

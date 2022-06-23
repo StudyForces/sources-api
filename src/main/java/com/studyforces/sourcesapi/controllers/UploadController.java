@@ -4,6 +4,7 @@ import com.studyforces.sourcesapi.exceptions.UploadControllerException;
 import com.studyforces.sourcesapi.models.SourceUpload;
 import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
 import com.studyforces.sourcesapi.requests.SaveSourceRequest;
+import com.studyforces.sourcesapi.requests.UploadType;
 import com.studyforces.sourcesapi.responses.FileInfoResponse;
 import com.studyforces.sourcesapi.services.FileService;
 import io.minio.StatObjectResponse;
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/upload")
+@PreAuthorize("hasRole('editor')")
 public class UploadController {
     private final FileService fileService;
     private final SourceUploadRepository sourceUploadRepository;
@@ -27,9 +29,16 @@ public class UploadController {
     }
 
     @PostMapping("/request")
-    Map<String, String> requestUploadURL(@RequestHeader("Content-Type") String contentType) throws Exception {
+    Map<String, String> request(@RequestHeader("Content-Type") String contentType,
+                                @RequestParam(name = "type", defaultValue = "SOURCE") UploadType type) throws Exception {
         HashMap<String, String> res = new HashMap<>();
         String fileName = UUID.randomUUID().toString();
+
+        switch (type) {
+            case SOURCE -> fileName = "sources/" + fileName;
+            case ATTACHMENT -> fileName = "attachments/" + fileName;
+        }
+
         res.put("fileName", fileName);
         res.put("url", fileService.uploadURL(fileName, contentType));
 
@@ -48,16 +57,12 @@ public class UploadController {
         return sourceUploadRepository.save(upload);
     }
 
-    @PreAuthorize("hasRole('editor')")
-    @GetMapping("/view/{id}")
-    public void method(HttpServletResponse httpServletResponse, @PathVariable Long id) throws Exception {
-        SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow();
-
-        httpServletResponse.setHeader("Location", fileService.objectURL(upload.getSourceFile()));
+    @GetMapping("/view")
+    public void view(HttpServletResponse httpServletResponse, @RequestParam("file") String fileName) throws Exception {
+        httpServletResponse.setHeader("Location", fileService.objectURL(fileName));
         httpServletResponse.setStatus(302);
     }
 
-    @PreAuthorize("hasRole('editor')")
     @GetMapping("/info/{id}")
     FileInfoResponse fileInfo(@PathVariable Long id) throws Exception {
         SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow();
