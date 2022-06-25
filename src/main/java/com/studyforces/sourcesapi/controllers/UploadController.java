@@ -6,6 +6,7 @@ import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
 import com.studyforces.sourcesapi.requests.SaveSourceRequest;
 import com.studyforces.sourcesapi.requests.UploadType;
 import com.studyforces.sourcesapi.responses.FileInfoResponse;
+import com.studyforces.sourcesapi.responses.FileURLResponse;
 import com.studyforces.sourcesapi.services.FileService;
 import io.minio.StatObjectResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,9 +59,8 @@ public class UploadController {
     }
 
     @GetMapping("/view")
-    public void view(HttpServletResponse httpServletResponse, @RequestParam("file") String fileName) throws Exception {
-        httpServletResponse.setHeader("Location", fileService.objectURL(fileName));
-        httpServletResponse.setStatus(302);
+    public FileURLResponse view(@RequestParam("file") String fileName) throws Exception {
+        return FileURLResponse.builder().url(fileService.objectURL(fileName)).build();
     }
 
     @GetMapping("/info/{id}")
