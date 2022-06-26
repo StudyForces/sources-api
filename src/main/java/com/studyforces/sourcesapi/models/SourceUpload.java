@@ -40,14 +40,14 @@ public class SourceUpload {
         this.ocrResults = ocrResults;
     }
 
-    @Lob
-    private List<String> convertedFiles;
+    @ElementCollection
+    private List<UploadConvertedFile> convertedFiles;
 
-    public List<String> getConvertedFiles() {
+    public List<UploadConvertedFile> getConvertedFiles() {
         return this.convertedFiles;
     }
 
-    public void setConvertedFiles(List<String> convertedFiles) {
+    public void setConvertedFiles(List<UploadConvertedFile> convertedFiles) {
         this.convertedFiles = convertedFiles;
     }
 
