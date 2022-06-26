@@ -1,4 +1,4 @@
-package com.studyforces.sourcesapi.services.messages;
+package com.studyforces.sourcesapi.services.messages.ocr;
 
 public class OCRDataText {
     private String text;

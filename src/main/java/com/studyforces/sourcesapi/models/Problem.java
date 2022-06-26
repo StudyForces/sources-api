@@ -2,7 +2,6 @@ package com.studyforces.sourcesapi.models;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Problem {
@@ -77,13 +76,14 @@ public class Problem {
     }
 
     @OneToMany(mappedBy = "problem")
-    private Set<OCRResult> ocrResults;
+    @OrderBy("rect.page, rect.x, rect.y")
+    private List<OCRResult> ocrResults;
 
-    public Set<OCRResult> getOcrResults() {
+    public List<OCRResult> getOcrResults() {
         return ocrResults;
     }
 
-    public void setOcrResults(Set<OCRResult> ocrResults) {
+    public void setOcrResults(List<OCRResult> ocrResults) {
         this.ocrResults = ocrResults;
     }
 

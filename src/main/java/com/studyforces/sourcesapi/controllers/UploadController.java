@@ -7,7 +7,9 @@ import com.studyforces.sourcesapi.requests.SaveSourceRequest;
 import com.studyforces.sourcesapi.requests.UploadType;
 import com.studyforces.sourcesapi.responses.FileInfoResponse;
 import com.studyforces.sourcesapi.responses.FileURLResponse;
+import com.studyforces.sourcesapi.responses.FileUploadResponse;
 import com.studyforces.sourcesapi.services.FileService;
+import com.studyforces.sourcesapi.services.SourceService;
 import io.minio.StatObjectResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,17 +24,18 @@ import java.util.UUID;
 @PreAuthorize("hasRole('editor')")
 public class UploadController {
     private final FileService fileService;
+    private final SourceService sourceService;
     private final SourceUploadRepository sourceUploadRepository;
 
-    public UploadController(FileService fileService, SourceUploadRepository sourceUploadRepository) {
+    public UploadController(FileService fileService, SourceUploadRepository sourceUploadRepository, SourceService sourceService) {
         this.fileService = fileService;
         this.sourceUploadRepository = sourceUploadRepository;
+        this.sourceService = sourceService;
     }
 
     @PostMapping("/request")
-    Map<String, String> request(@RequestHeader("Content-Type") String contentType,
-                                @RequestParam(name = "type", defaultValue = "SOURCE") UploadType type) throws Exception {
-        HashMap<String, String> res = new HashMap<>();
+    FileUploadResponse request(@RequestHeader("Content-Type") String contentType,
+                               @RequestParam(name = "type", defaultValue = "SOURCE") UploadType type) throws Exception {
         String fileName = UUID.randomUUID().toString();
 
         switch (type) {
@@ -40,8 +43,10 @@ public class UploadController {
             case ATTACHMENT -> fileName = "attachments/" + fileName;
         }
 
-        res.put("fileName", fileName);
-        res.put("url", fileService.uploadURL(fileName, contentType));
+        FileUploadResponse res = new FileUploadResponse();
+
+        res.setFileName(fileName);
+        res.setUrl(fileService.uploadURL(fileName, contentType));
 
         return res;
     }
@@ -55,7 +60,20 @@ public class UploadController {
         SourceUpload upload = new SourceUpload();
         upload.setSourceFile(req.getFileName());
 
-        return sourceUploadRepository.save(upload);
+        upload = sourceUploadRepository.save(upload);
+
+        sourceService.process(upload);
+
+        return upload;
+    }
+
+    @PostMapping("/convert/{id}")
+    SourceUpload convert(@PathVariable Long id) throws Exception {
+        SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow();
+
+        sourceService.process(upload);
+
+        return upload;
     }
 
     @GetMapping("/view")

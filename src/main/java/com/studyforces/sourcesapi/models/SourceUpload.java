@@ -1,7 +1,7 @@
 package com.studyforces.sourcesapi.models;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 public class SourceUpload {
@@ -29,13 +29,36 @@ public class SourceUpload {
     }
 
     @OneToMany(mappedBy = "sourceUpload")
-    private Set<OCRResult> ocrResults;
+    @OrderBy("rect.page, rect.x, rect.y")
+    private List<OCRResult> ocrResults;
 
-    public Set<OCRResult> getOcrResults() {
+    public List<OCRResult> getOcrResults() {
         return ocrResults;
     }
 
-    public void setOcrResults(Set<OCRResult> ocrResults) {
+    public void setOcrResults(List<OCRResult> ocrResults) {
         this.ocrResults = ocrResults;
+    }
+
+    @Lob
+    private List<String> convertedFiles;
+
+    public List<String> getConvertedFiles() {
+        return this.convertedFiles;
+    }
+
+    public void setConvertedFiles(List<String> convertedFiles) {
+        this.convertedFiles = convertedFiles;
+    }
+
+    @Embedded
+    private SourceMetadata metadata;
+
+    public SourceMetadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(SourceMetadata metadata) {
+        this.metadata = metadata;
     }
 }
