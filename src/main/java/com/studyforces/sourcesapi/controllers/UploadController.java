@@ -68,12 +68,8 @@ public class UploadController {
     }
 
     @PostMapping("/convert/{id}")
-    SourceUpload convert(@PathVariable Long id) throws Exception {
-        SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow();
-
-        sourceService.process(upload);
-
-        return upload;
+    public void convert(@PathVariable Long id) throws Exception {
+        sourceService.process(sourceUploadRepository.findById(id).orElseThrow());
     }
 
     @GetMapping("/view")
