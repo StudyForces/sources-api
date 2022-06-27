@@ -3,12 +3,14 @@ package com.studyforces.sourcesapi.services;
 import com.studyforces.sourcesapi.models.SourceUpload;
 import com.studyforces.sourcesapi.models.UploadConvertedFile;
 import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
+import com.studyforces.sourcesapi.responses.FileInfoResponse;
 import com.studyforces.sourcesapi.responses.FileUploadResponse;
 import com.studyforces.sourcesapi.services.messages.sourceProcess.SourceConversion;
 import com.studyforces.sourcesapi.models.SourceMetadata;
 import com.studyforces.sourcesapi.services.messages.sourceProcess.SourceConversionRequest;
 import com.studyforces.sourcesapi.services.messages.sourceProcess.SourceMetadataRequest;
 import com.studyforces.sourcesapi.services.messages.sourceProcess.SourceProcessResponse;
+import io.minio.StatObjectResponse;
 import io.minio.messages.Upload;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,14 @@ public class SourceService {
 
         req.setSourceUploadID(upload.getId());
         req.setUrl(fileService.objectURL(upload.getSourceFile()));
+
+        StatObjectResponse stat = fileService.fileInfo(upload.getSourceFile());
+
+        req.setFileInfo(FileInfoResponse.builder()
+                .contentType(stat.contentType())
+                .size(stat.size())
+                .lastModified(stat.lastModified().toEpochSecond())
+                .build());
 
         unboundedMetadataRequests.offer(req);
     }

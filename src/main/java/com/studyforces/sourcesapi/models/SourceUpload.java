@@ -41,6 +41,7 @@ public class SourceUpload {
     }
 
     @ElementCollection
+    @OrderBy("page")
     private List<UploadConvertedFile> convertedFiles;
 
     public List<UploadConvertedFile> getConvertedFiles() {
