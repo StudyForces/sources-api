@@ -70,6 +70,19 @@ public class SourceService {
             SourceConversionRequest req = new SourceConversionRequest();
             req.setSourceUploadID(upload.getId());
             req.setMetadata(upload.getMetadata());
+
+            try {
+                StatObjectResponse stat = fileService.fileInfo(upload.getSourceFile());
+
+                req.setFileInfo(FileInfoResponse.builder()
+                        .contentType(stat.contentType())
+                        .size(stat.size())
+                        .lastModified(stat.lastModified().toEpochSecond())
+                        .build());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
             try {
                 req.setUrl(fileService.objectURL(upload.getSourceFile()));
             } catch (Exception e) {
@@ -114,7 +127,7 @@ public class SourceService {
             for (int i = 0; i < files.size(); i++) {
                 UploadConvertedFile conv = new UploadConvertedFile();
                 conv.setFile(files.get(i));
-                conv.setPage((long) i);
+                conv.setPage(i);
                 convs.add(conv);
             }
 

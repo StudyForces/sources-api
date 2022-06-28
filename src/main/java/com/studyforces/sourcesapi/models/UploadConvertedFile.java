@@ -8,5 +8,5 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class UploadConvertedFile {
     private String file;
-    private Long page;
+    private Integer page;
 }

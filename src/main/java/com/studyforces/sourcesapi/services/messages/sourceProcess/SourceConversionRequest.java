@@ -1,6 +1,7 @@
 package com.studyforces.sourcesapi.services.messages.sourceProcess;
 
 import com.studyforces.sourcesapi.models.SourceMetadata;
+import com.studyforces.sourcesapi.responses.FileInfoResponse;
 import com.studyforces.sourcesapi.responses.FileUploadResponse;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,5 +14,6 @@ public class SourceConversionRequest {
     private String url;
     private Long sourceUploadID;
     private SourceMetadata metadata;
+    private FileInfoResponse fileInfo;
     private List<FileUploadResponse> uploadURLs;
 }
