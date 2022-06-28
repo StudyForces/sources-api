@@ -5,13 +5,13 @@ import javax.persistence.*;
 @Embeddable
 public class OCRRect {
 
-    private Long page;
+    private Integer page;
 
-    public Long getPage() {
+    public Integer getPage() {
         return this.page;
     }
 
-    public void setPage(Long page) {
+    public void setPage(Integer page) {
         this.page = page;
     }
 
