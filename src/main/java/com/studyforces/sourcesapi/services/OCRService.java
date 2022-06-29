@@ -3,6 +3,7 @@ package com.studyforces.sourcesapi.services;
 import com.studyforces.sourcesapi.models.OCRResult;
 import com.studyforces.sourcesapi.models.SourceUpload;
 import com.studyforces.sourcesapi.models.OCRResultStatus;
+import com.studyforces.sourcesapi.models.UploadConvertedFile;
 import com.studyforces.sourcesapi.repositories.OCRResultRepository;
 import com.studyforces.sourcesapi.services.messages.ocr.OCRDataFormula;
 import com.studyforces.sourcesapi.services.messages.ocr.OCRDataText;
@@ -40,7 +41,13 @@ public class OCRService {
         for (OCRResult result : results) {
             result.setStatus(OCRResultStatus.PENDING);
             OCRRequestMessage msg = new OCRRequestMessage();
-            msg.setUrl(fileService.objectURL(upload.getSourceFile()));
+
+            UploadConvertedFile convFile = upload.getConvertedFiles().stream()
+                    .filter(file -> file.getPage().equals(result.getRect().getPage()))
+                    .findAny()
+                    .orElse(null);
+
+            msg.setUrl(fileService.objectURL(convFile.getFile()));
             msg.setOcrResultID(result.getId());
             msg.setRect(result.getRect());
             switch (result.getType()) {
