@@ -29,7 +29,7 @@ public class SourceUpload {
     }
 
     @OneToMany(mappedBy = "sourceUpload")
-    @OrderBy("rect.page, rect.x, rect.y")
+    @OrderBy("rect.page, rect.y, rect.x")
     private List<OCRResult> ocrResults;
 
     public List<OCRResult> getOcrResults() {
