@@ -47,6 +47,10 @@ public class OCRService {
                     .findAny()
                     .orElse(null);
 
+            if (convFile == null) {
+                continue;
+            }
+
             msg.setUrl(fileService.objectURL(convFile.getFile()));
             msg.setOcrResultID(result.getId());
             msg.setRect(result.getRect());
