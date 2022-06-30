@@ -78,8 +78,10 @@ public class ProblemController {
         List<OCRResult> ocrResults = new ArrayList<>();
         Iterable<OCRResult> ocrResultsI = ocrResultRepository.findAllById(upd.getOcrResults());
         ocrResultsI.forEach(ocrResults::add);
-        problem.setOcrResults(ocrResults);
+        problem = problemRepository.save(problem);
+        Problem finalProblem = problem;
+        ocrResultRepository.saveAll(ocrResults.stream().peek(r -> r.setProblem(finalProblem)).toList());
 
-        return problemRepository.save(problem);
+        return problem;
     }
 }
