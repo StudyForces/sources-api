@@ -22,18 +22,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/upload")
+@RequestMapping("/uploads")
 @PreAuthorize("hasRole('editor')")
-public class UploadController {
+public class UploadsController {
     private final FileService fileService;
     private final SourceService sourceService;
     private final SourceUploadRepository sourceUploadRepository;
     private final OCRResultRepository ocrResultRepository;
 
-    public UploadController(FileService fileService,
-                            SourceUploadRepository sourceUploadRepository,
-                            SourceService sourceService,
-                            OCRResultRepository ocrResultRepository) {
+    public UploadsController(FileService fileService,
+                             SourceUploadRepository sourceUploadRepository,
+                             SourceService sourceService,
+                             OCRResultRepository ocrResultRepository) {
         this.fileService = fileService;
         this.sourceUploadRepository = sourceUploadRepository;
         this.sourceService = sourceService;

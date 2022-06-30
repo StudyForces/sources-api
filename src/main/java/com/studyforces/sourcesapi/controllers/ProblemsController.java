@@ -17,15 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/problem")
+@RequestMapping("/problems")
 @PreAuthorize("hasRole('editor')")
-public class ProblemController {
+public class ProblemsController {
 
     private final ProblemRepository problemRepository;
     private final OCRResultRepository ocrResultRepository;
 
-    ProblemController(ProblemRepository problemRepository,
-                      OCRResultRepository ocrResultRepository) {
+    ProblemsController(ProblemRepository problemRepository,
+                       OCRResultRepository ocrResultRepository) {
         this.problemRepository = problemRepository;
         this.ocrResultRepository = ocrResultRepository;
     }
