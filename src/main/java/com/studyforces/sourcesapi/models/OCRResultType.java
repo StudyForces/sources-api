@@ -1,5 +1,5 @@
 package com.studyforces.sourcesapi.models;
 
 public enum OCRResultType {
-    TEXT, FORMULA
+    TEXT, FORMULA, PICTURE
 }

@@ -57,6 +57,7 @@ public class OCRService {
             switch (result.getType()) {
                 case TEXT -> unboundedTexts.offer(msg);
                 case FORMULA -> unboundedFormulas.offer(msg);
+                case PICTURE -> result.setStatus(OCRResultStatus.DONE);
             }
         }
 
