@@ -60,7 +60,12 @@ public class ProblemController {
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        problemRepository.deleteById(id);
+        Problem problem = problemRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        List<OCRResult> prevRes = problem.getOcrResults();
+        if (prevRes != null) {
+            ocrResultRepository.saveAll(prevRes.stream().peek(r -> r.setProblem(null)).toList());
+        }
+        problemRepository.delete(problem);
     }
 
     private Problem save(Problem problem, ProblemUpdateRequest upd) {
