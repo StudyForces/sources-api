@@ -3,7 +3,6 @@ package com.studyforces.sourcesapi.controllers;
 import com.studyforces.sourcesapi.models.SourceUpload;
 import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
 import com.studyforces.sourcesapi.services.OCRService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
