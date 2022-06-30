@@ -70,7 +70,10 @@ public class ProblemController {
         problem.setSolverMetadata(upd.getSolverMetadata());
         problem.setAttachments(upd.getAttachments());
 
-        ocrResultRepository.saveAll(problem.getOcrResults().stream().peek(r -> r.setProblem(null)).toList());
+        List<OCRResult> prevRes = problem.getOcrResults();
+        if (prevRes != null) {
+            ocrResultRepository.saveAll(prevRes.stream().peek(r -> r.setProblem(null)).toList());
+        }
 
         List<OCRResult> ocrResults = new ArrayList<>();
         Iterable<OCRResult> ocrResultsI = ocrResultRepository.findAllById(upd.getOcrResults());
