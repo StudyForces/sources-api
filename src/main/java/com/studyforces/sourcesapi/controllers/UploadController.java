@@ -76,6 +76,7 @@ public class UploadController {
     @PostMapping("/{id}/ocrResults")
     public List<OCRResult> setOCRResultForId(@PathVariable Long id, @RequestBody UpdateSourceUploadOCRRequest req) {
         SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
         upload.setOcrResults(req.getOcrResults());
 
         return sourceUploadRepository.save(upload).getOcrResults();
