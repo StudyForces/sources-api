@@ -1,5 +1,7 @@
 package com.studyforces.sourcesapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -79,6 +81,7 @@ public class Problem {
     @OrderBy("rect.page, rect.y, rect.x")
     private List<OCRResult> ocrResults;
 
+    @JsonIgnore
     public List<OCRResult> getOcrResults() {
         return ocrResults;
     }

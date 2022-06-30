@@ -1,5 +1,7 @@
 package com.studyforces.sourcesapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -66,6 +68,7 @@ public class OCRResult {
     @JoinColumn(name="source_upload_id")
     private SourceUpload sourceUpload;
 
+    @JsonIgnore
     public SourceUpload getSourceUpload() {
         return sourceUpload;
     }
@@ -78,6 +81,7 @@ public class OCRResult {
     @JoinColumn(name="problem_id")
     private Problem problem;
 
+    @JsonIgnore
     public Problem getProblem() {
         return problem;
     }
