@@ -2,6 +2,7 @@ package com.studyforces.sourcesapi.controllers;
 
 import com.studyforces.sourcesapi.models.OCRResult;
 import com.studyforces.sourcesapi.models.SourceUpload;
+import com.studyforces.sourcesapi.repositories.OCRResultRepository;
 import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
 import com.studyforces.sourcesapi.requests.SaveSourceRequest;
 import com.studyforces.sourcesapi.requests.UpdateSourceUploadOCRRequest;
@@ -17,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,13 +28,16 @@ public class UploadController {
     private final FileService fileService;
     private final SourceService sourceService;
     private final SourceUploadRepository sourceUploadRepository;
+    private final OCRResultRepository ocrResultRepository;
 
     public UploadController(FileService fileService,
                             SourceUploadRepository sourceUploadRepository,
-                            SourceService sourceService) {
+                            SourceService sourceService,
+                            OCRResultRepository ocrResultRepository) {
         this.fileService = fileService;
         this.sourceUploadRepository = sourceUploadRepository;
         this.sourceService = sourceService;
+        this.ocrResultRepository = ocrResultRepository;
     }
 
     @PostMapping
@@ -77,9 +82,11 @@ public class UploadController {
     public List<OCRResult> setOCRResultForId(@PathVariable Long id, @RequestBody UpdateSourceUploadOCRRequest req) {
         SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
-        upload.setOcrResults(req.getOcrResults());
+        List<OCRResult> ocrResults = new ArrayList<>();
+        ocrResultRepository.saveAll(req.getOcrResults().stream()
+                .peek(r -> r.setSourceUpload(upload)).toList()).forEach(ocrResults::add);
 
-        return sourceUploadRepository.save(upload).getOcrResults();
+        return ocrResults;
     }
 
     @PostMapping("/{id}/convert")
