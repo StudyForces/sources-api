@@ -39,6 +39,10 @@ public class OCRService {
         List<OCRResult> results = upload.getOcrResults().stream().toList();
 
         for (OCRResult result : results) {
+            if (OCRResultStatus.DONE.equals(result.getStatus())) {
+                continue;
+            }
+
             result.setStatus(OCRResultStatus.PENDING);
             OCRRequestMessage msg = new OCRRequestMessage();
 
