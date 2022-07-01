@@ -35,11 +35,14 @@ public class SourceService {
     BlockingQueue<SourceMetadataRequest> unboundedMetadataRequests = new LinkedBlockingQueue<>();
     BlockingQueue<SourceConversionRequest> unboundedConvertRequests = new LinkedBlockingQueue<>();
 
-    public void process(SourceUpload upload) throws Exception {
+    public void process(SourceUpload upload) {
         SourceMetadataRequest req = new SourceMetadataRequest();
 
         req.setSourceUploadID(upload.getId());
         req.setFileInfos(getFileInfo(upload.getSourceFiles()));
+        upload.setMetadata(null);
+
+        sourceUploadRepository.save(upload);
 
         unboundedMetadataRequests.offer(req);
     }

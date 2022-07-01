@@ -47,7 +47,7 @@ public class UploadsController {
     }
 
     @PostMapping
-    SourceUpload saveSource(@RequestBody SaveSourceRequest req) throws Exception {
+    SourceUpload saveSource(@RequestBody SaveSourceRequest req) {
         for (String fileName : req.getFileNames()) {
             if (!fileService.fileExists(fileName)) {
                 throw new ResourceNotFoundException();
@@ -81,6 +81,25 @@ public class UploadsController {
     @GetMapping("/{id}")
     public SourceUpload findById(@PathVariable Long id) {
         return sourceUploadRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @PutMapping("/{id}")
+    public SourceUpload setSourceFiles(@PathVariable Long id, @RequestBody SaveSourceRequest req) {
+        SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+        List<SourceUploadFile> files = new ArrayList<>();
+        for (int i = 0; i < req.getFileNames().size(); i++) {
+            String file = req.getFileNames().get(i);
+            SourceUploadFile f = new SourceUploadFile();
+            f.setFile(file);
+            f.setOrder(i);
+        }
+
+        upload.setSourceFiles(files);
+
+        sourceService.process(upload);
+
+        return upload;
     }
 
     @DeleteMapping("/{id}")
