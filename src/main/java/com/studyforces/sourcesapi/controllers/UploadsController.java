@@ -1,6 +1,7 @@
 package com.studyforces.sourcesapi.controllers;
 
 import com.studyforces.sourcesapi.models.OCRResult;
+import com.studyforces.sourcesapi.models.OCRResultStatus;
 import com.studyforces.sourcesapi.models.SourceUpload;
 import com.studyforces.sourcesapi.repositories.OCRResultRepository;
 import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/uploads")
@@ -82,9 +86,34 @@ public class UploadsController {
     public List<OCRResult> setOCRResultForId(@PathVariable Long id, @RequestBody UpdateSourceUploadOCRRequest req) {
         SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
+        List<OCRResult> prevRes = upload.getOcrResults();
+        if (prevRes == null) {
+            prevRes = new ArrayList<>();
+        }
+
+        Map<Boolean, List<OCRResult>> grouped = req.getOcrResults().stream().collect(Collectors.groupingBy(r -> r.getId() != null));
+        Map<Long, OCRResult> existing = grouped.get(true).stream().collect(Collectors.toMap(OCRResult::getId, i -> i));
+        List<OCRResult> newResults = grouped.get(false);
+
+        List<OCRResult> toSave = new ArrayList<>();
+
+        // Existing (previous) ones
+        prevRes.stream().map(r -> {
+            if (!existing.containsKey(r.getId())) {
+                return null;
+            }
+            OCRResult upd = existing.get(r.getId());
+            r.setData(upd.getData());
+            r.setRect(upd.getRect());
+            return r;
+        }).filter(Objects::nonNull).forEach(toSave::add);
+
+        // New ones
+        newResults.stream()
+                .peek(r -> r.setSourceUpload(upload)).forEach(toSave::add);
+
         List<OCRResult> ocrResults = new ArrayList<>();
-        ocrResultRepository.saveAll(req.getOcrResults().stream()
-                .peek(r -> r.setSourceUpload(upload)).toList()).forEach(ocrResults::add);
+        ocrResultRepository.saveAll(toSave).forEach(ocrResults::add);
 
         return ocrResults;
     }
