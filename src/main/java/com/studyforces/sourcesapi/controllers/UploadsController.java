@@ -1,7 +1,6 @@
 package com.studyforces.sourcesapi.controllers;
 
 import com.studyforces.sourcesapi.models.OCRResult;
-import com.studyforces.sourcesapi.models.OCRResultStatus;
 import com.studyforces.sourcesapi.models.SourceUpload;
 import com.studyforces.sourcesapi.models.SourceUploadFile;
 import com.studyforces.sourcesapi.repositories.OCRResultRepository;
@@ -11,7 +10,6 @@ import com.studyforces.sourcesapi.requests.UpdateSourceUploadOCRRequest;
 import com.studyforces.sourcesapi.responses.FileInfoResponse;
 import com.studyforces.sourcesapi.services.FileService;
 import com.studyforces.sourcesapi.services.SourceService;
-import com.studyforces.sourcesapi.services.messages.sourceProcess.FileInfo;
 import io.minio.StatObjectResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

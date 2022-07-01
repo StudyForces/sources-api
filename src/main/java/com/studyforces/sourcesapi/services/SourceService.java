@@ -38,11 +38,11 @@ public class SourceService {
     public void process(SourceUpload upload) {
         SourceMetadataRequest req = new SourceMetadataRequest();
 
+        upload.setMetadata(null);
+        sourceUploadRepository.save(upload);
+
         req.setSourceUploadID(upload.getId());
         req.setFileInfos(getFileInfo(upload.getSourceFiles()));
-        upload.setMetadata(null);
-
-        sourceUploadRepository.save(upload);
 
         unboundedMetadataRequests.offer(req);
     }

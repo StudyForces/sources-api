@@ -19,6 +19,17 @@ public class SourceUpload {
         return id;
     }
 
+    @Basic
+    private String sourceFile;
+
+    public String getSourceFile() {
+        return sourceFile;
+    }
+
+    public void setSourceFile(String sourceFile) {
+        this.sourceFile = sourceFile;
+    }
+
     @ElementCollection
     @OrderBy("order")
     private List<SourceUploadFile> sourceFiles;
