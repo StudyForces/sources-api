@@ -1,17 +1,14 @@
 package com.studyforces.sourcesapi.services;
 
 import com.studyforces.sourcesapi.models.SourceUpload;
+import com.studyforces.sourcesapi.models.SourceUploadFile;
 import com.studyforces.sourcesapi.models.UploadConvertedFile;
 import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
 import com.studyforces.sourcesapi.responses.FileInfoResponse;
 import com.studyforces.sourcesapi.responses.FileUploadResponse;
-import com.studyforces.sourcesapi.services.messages.sourceProcess.SourceConversion;
+import com.studyforces.sourcesapi.services.messages.sourceProcess.*;
 import com.studyforces.sourcesapi.models.SourceMetadata;
-import com.studyforces.sourcesapi.services.messages.sourceProcess.SourceConversionRequest;
-import com.studyforces.sourcesapi.services.messages.sourceProcess.SourceMetadataRequest;
-import com.studyforces.sourcesapi.services.messages.sourceProcess.SourceProcessResponse;
 import io.minio.StatObjectResponse;
-import io.minio.messages.Upload;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,15 +39,7 @@ public class SourceService {
         SourceMetadataRequest req = new SourceMetadataRequest();
 
         req.setSourceUploadID(upload.getId());
-        req.setUrl(fileService.objectURL(upload.getSourceFile()));
-
-        StatObjectResponse stat = fileService.fileInfo(upload.getSourceFile());
-
-        req.setFileInfo(FileInfoResponse.builder()
-                .contentType(stat.contentType())
-                .size(stat.size())
-                .lastModified(stat.lastModified().toEpochSecond())
-                .build());
+        req.setFileInfos(getFileInfo(upload.getSourceFiles()));
 
         unboundedMetadataRequests.offer(req);
     }
@@ -70,24 +59,7 @@ public class SourceService {
             SourceConversionRequest req = new SourceConversionRequest();
             req.setSourceUploadID(upload.getId());
             req.setMetadata(upload.getMetadata());
-
-            try {
-                StatObjectResponse stat = fileService.fileInfo(upload.getSourceFile());
-
-                req.setFileInfo(FileInfoResponse.builder()
-                        .contentType(stat.contentType())
-                        .size(stat.size())
-                        .lastModified(stat.lastModified().toEpochSecond())
-                        .build());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                req.setUrl(fileService.objectURL(upload.getSourceFile()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            req.setFileInfos(getFileInfo(upload.getSourceFiles()));
 
             List<FileUploadResponse> uploadURLs = new ArrayList<>();
 
@@ -135,6 +107,26 @@ public class SourceService {
 
             this.sourceUploadRepository.save(upload);
         };
+    }
+
+    private List<FileInfo> getFileInfo(List<SourceUploadFile> files) {
+        return files.stream().map(file -> {
+            try {
+                StatObjectResponse stat = fileService.fileInfo(file.getFile());
+                String url = fileService.objectURL(file.getFile());
+                FileInfoResponse fi = FileInfoResponse.builder()
+                        .contentType(stat.contentType())
+                        .size(stat.size())
+                        .lastModified(stat.lastModified().toEpochSecond())
+                        .build();
+                return FileInfo.builder()
+                        .url(url)
+                        .fileInfo(fi)
+                        .build();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
     }
 
 }

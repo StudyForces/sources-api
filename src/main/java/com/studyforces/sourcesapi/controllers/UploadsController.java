@@ -3,6 +3,7 @@ package com.studyforces.sourcesapi.controllers;
 import com.studyforces.sourcesapi.models.OCRResult;
 import com.studyforces.sourcesapi.models.OCRResultStatus;
 import com.studyforces.sourcesapi.models.SourceUpload;
+import com.studyforces.sourcesapi.models.SourceUploadFile;
 import com.studyforces.sourcesapi.repositories.OCRResultRepository;
 import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
 import com.studyforces.sourcesapi.requests.SaveSourceRequest;
@@ -10,6 +11,7 @@ import com.studyforces.sourcesapi.requests.UpdateSourceUploadOCRRequest;
 import com.studyforces.sourcesapi.responses.FileInfoResponse;
 import com.studyforces.sourcesapi.services.FileService;
 import com.studyforces.sourcesapi.services.SourceService;
+import com.studyforces.sourcesapi.services.messages.sourceProcess.FileInfo;
 import io.minio.StatObjectResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,12 +48,23 @@ public class UploadsController {
 
     @PostMapping
     SourceUpload saveSource(@RequestBody SaveSourceRequest req) throws Exception {
-        if (!fileService.fileExists(req.getFileName())) {
-            throw new ResourceNotFoundException();
+        for (String fileName : req.getFileNames()) {
+            if (!fileService.fileExists(fileName)) {
+                throw new ResourceNotFoundException();
+            }
         }
 
         SourceUpload upload = new SourceUpload();
-        upload.setSourceFile(req.getFileName());
+
+        List<SourceUploadFile> files = new ArrayList<>();
+        for (int i = 0; i < req.getFileNames().size(); i++) {
+            String file = req.getFileNames().get(i);
+            SourceUploadFile f = new SourceUploadFile();
+            f.setFile(file);
+            f.setOrder(i);
+        }
+
+        upload.setSourceFiles(files);
 
         upload = sourceUploadRepository.save(upload);
 
@@ -124,15 +137,20 @@ public class UploadsController {
     }
 
     @GetMapping("/{id}/info")
-    FileInfoResponse fileInfo(@PathVariable Long id) throws Exception {
+    List<FileInfoResponse> fileInfo(@PathVariable Long id) throws Exception {
         SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
-        StatObjectResponse stat = fileService.fileInfo(upload.getSourceFile());
-
-        return FileInfoResponse.builder()
-                .contentType(stat.contentType())
-                .size(stat.size())
-                .lastModified(stat.lastModified().toEpochSecond())
-                .build();
+        return upload.getSourceFiles().stream().map(file -> {
+            try {
+                StatObjectResponse stat = fileService.fileInfo(file.getFile());
+                return FileInfoResponse.builder()
+                        .contentType(stat.contentType())
+                        .size(stat.size())
+                        .lastModified(stat.lastModified().toEpochSecond())
+                        .build();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
     }
 }

@@ -19,15 +19,16 @@ public class SourceUpload {
         return id;
     }
 
-    @Basic
-    private String sourceFile;
+    @ElementCollection
+    @OrderBy("order")
+    private List<SourceUploadFile> sourceFiles;
 
-    public String getSourceFile() {
-        return sourceFile;
+    public List<SourceUploadFile> getSourceFiles() {
+        return sourceFiles;
     }
 
-    public void setSourceFile(String sourceFile) {
-        this.sourceFile = sourceFile;
+    public void setSourceFiles(List<SourceUploadFile> sourceFiles) {
+        this.sourceFiles = sourceFiles;
     }
 
     @OneToMany(mappedBy = "sourceUpload", cascade = CascadeType.ALL)

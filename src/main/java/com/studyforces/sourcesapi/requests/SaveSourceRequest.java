@@ -1,13 +1,15 @@
 package com.studyforces.sourcesapi.requests;
 
-public class SaveSourceRequest {
-    private String fileName;
+import java.util.List;
 
-    public String getFileName() {
-        return this.fileName;
+public class SaveSourceRequest {
+    private List<String> fileNames;
+
+    public List<String> getFileNames() {
+        return this.fileNames;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFileNames(List<String> fileNames) {
+        this.fileNames = fileNames;
     }
 }
