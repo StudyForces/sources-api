@@ -60,6 +60,7 @@ public class UploadsController {
             SourceUploadFile f = new SourceUploadFile();
             f.setFile(file);
             f.setOrder(i);
+            files.add(f);
         }
 
         upload.setSourceFiles(files);
@@ -91,6 +92,7 @@ public class UploadsController {
             SourceUploadFile f = new SourceUploadFile();
             f.setFile(file);
             f.setOrder(i);
+            files.add(f);
         }
 
         upload.setSourceFiles(files);
