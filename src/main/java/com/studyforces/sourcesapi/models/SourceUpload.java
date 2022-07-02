@@ -30,6 +30,18 @@ public class SourceUpload {
         this.sourceFile = sourceFile;
     }
 
+    @ElementCollection
+    @OrderBy("order")
+    private List<SourceUploadFile> sourceFiles;
+
+    public List<SourceUploadFile> getSourceFiles() {
+        return sourceFiles;
+    }
+
+    public void setSourceFiles(List<SourceUploadFile> sourceFiles) {
+        this.sourceFiles = sourceFiles;
+    }
+
     @OneToMany(mappedBy = "sourceUpload", cascade = CascadeType.ALL)
     @OrderBy("rect.page, rect.y, rect.x")
     private List<OCRResult> ocrResults;

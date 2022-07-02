@@ -1,8 +1,8 @@
 package com.studyforces.sourcesapi.controllers;
 
 import com.studyforces.sourcesapi.models.OCRResult;
-import com.studyforces.sourcesapi.models.OCRResultStatus;
 import com.studyforces.sourcesapi.models.SourceUpload;
+import com.studyforces.sourcesapi.models.SourceUploadFile;
 import com.studyforces.sourcesapi.repositories.OCRResultRepository;
 import com.studyforces.sourcesapi.repositories.SourceUploadRepository;
 import com.studyforces.sourcesapi.requests.SaveSourceRequest;
@@ -45,13 +45,24 @@ public class UploadsController {
     }
 
     @PostMapping
-    SourceUpload saveSource(@RequestBody SaveSourceRequest req) throws Exception {
-        if (!fileService.fileExists(req.getFileName())) {
-            throw new ResourceNotFoundException();
+    SourceUpload saveSource(@RequestBody SaveSourceRequest req) {
+        for (String fileName : req.getFileNames()) {
+            if (!fileService.fileExists(fileName)) {
+                throw new ResourceNotFoundException();
+            }
         }
 
         SourceUpload upload = new SourceUpload();
-        upload.setSourceFile(req.getFileName());
+
+        List<SourceUploadFile> files = new ArrayList<>();
+        for (int i = 0; i < req.getFileNames().size(); i++) {
+            String file = req.getFileNames().get(i);
+            SourceUploadFile f = new SourceUploadFile();
+            f.setFile(file);
+            f.setOrder(i);
+        }
+
+        upload.setSourceFiles(files);
 
         upload = sourceUploadRepository.save(upload);
 
@@ -68,6 +79,25 @@ public class UploadsController {
     @GetMapping("/{id}")
     public SourceUpload findById(@PathVariable Long id) {
         return sourceUploadRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @PutMapping("/{id}")
+    public SourceUpload setSourceFiles(@PathVariable Long id, @RequestBody SaveSourceRequest req) {
+        SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+        List<SourceUploadFile> files = new ArrayList<>();
+        for (int i = 0; i < req.getFileNames().size(); i++) {
+            String file = req.getFileNames().get(i);
+            SourceUploadFile f = new SourceUploadFile();
+            f.setFile(file);
+            f.setOrder(i);
+        }
+
+        upload.setSourceFiles(files);
+
+        sourceService.process(upload);
+
+        return upload;
     }
 
     @DeleteMapping("/{id}")
@@ -124,15 +154,20 @@ public class UploadsController {
     }
 
     @GetMapping("/{id}/info")
-    FileInfoResponse fileInfo(@PathVariable Long id) throws Exception {
+    List<FileInfoResponse> fileInfo(@PathVariable Long id) throws Exception {
         SourceUpload upload = sourceUploadRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
-        StatObjectResponse stat = fileService.fileInfo(upload.getSourceFile());
-
-        return FileInfoResponse.builder()
-                .contentType(stat.contentType())
-                .size(stat.size())
-                .lastModified(stat.lastModified().toEpochSecond())
-                .build();
+        return upload.getSourceFiles().stream().map(file -> {
+            try {
+                StatObjectResponse stat = fileService.fileInfo(file.getFile());
+                return FileInfoResponse.builder()
+                        .contentType(stat.contentType())
+                        .size(stat.size())
+                        .lastModified(stat.lastModified().toEpochSecond())
+                        .build();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
     }
 }
