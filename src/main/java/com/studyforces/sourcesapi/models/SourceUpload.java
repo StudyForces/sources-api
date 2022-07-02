@@ -31,7 +31,7 @@ public class SourceUpload {
     }
 
     @ElementCollection
-    @OrderBy("order")
+    @OrderBy("idx")
     private List<SourceUploadFile> sourceFiles;
 
     public List<SourceUploadFile> getSourceFiles() {

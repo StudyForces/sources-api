@@ -59,7 +59,7 @@ public class UploadsController {
             String file = req.getFileNames().get(i);
             SourceUploadFile f = new SourceUploadFile();
             f.setFile(file);
-            f.setOrder(i);
+            f.setIdx(i);
             files.add(f);
         }
 
@@ -91,7 +91,7 @@ public class UploadsController {
             String file = req.getFileNames().get(i);
             SourceUploadFile f = new SourceUploadFile();
             f.setFile(file);
-            f.setOrder(i);
+            f.setIdx(i);
             files.add(f);
         }
 

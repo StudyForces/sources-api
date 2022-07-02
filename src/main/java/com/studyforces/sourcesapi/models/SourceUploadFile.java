@@ -8,5 +8,5 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class SourceUploadFile {
     private String file;
-    private Integer order;
+    private Integer idx;
 }
