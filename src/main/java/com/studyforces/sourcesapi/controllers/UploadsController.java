@@ -19,10 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -124,25 +121,31 @@ public class UploadsController {
         }
 
         Map<Boolean, List<OCRResult>> grouped = req.getOcrResults().stream().collect(Collectors.groupingBy(r -> r.getId() != null));
-        Map<Long, OCRResult> existing = grouped.get(true).stream().collect(Collectors.toMap(OCRResult::getId, i -> i));
+        Map<Long, OCRResult> existing = new HashMap<>();
+        if (grouped.get(true) != null) {
+            existing = grouped.get(true).stream().collect(Collectors.toMap(OCRResult::getId, i -> i));
+        }
         List<OCRResult> newResults = grouped.get(false);
 
         List<OCRResult> toSave = new ArrayList<>();
 
         // Existing (previous) ones
+        Map<Long, OCRResult> finalExisting = existing;
         prevRes.stream().map(r -> {
-            if (!existing.containsKey(r.getId())) {
+            if (!finalExisting.containsKey(r.getId())) {
                 return null;
             }
-            OCRResult upd = existing.get(r.getId());
+            OCRResult upd = finalExisting.get(r.getId());
             r.setData(upd.getData());
             r.setRect(upd.getRect());
             return r;
         }).filter(Objects::nonNull).forEach(toSave::add);
 
         // New ones
-        newResults.stream()
-                .peek(r -> r.setSourceUpload(upload)).forEach(toSave::add);
+        if (newResults != null) {
+            newResults.stream()
+                    .peek(r -> r.setSourceUpload(upload)).forEach(toSave::add);
+        }
 
         List<OCRResult> ocrResults = new ArrayList<>();
         ocrResultRepository.saveAll(toSave).forEach(ocrResults::add);
