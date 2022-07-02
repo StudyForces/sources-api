@@ -1,6 +1,8 @@
 package com.studyforces.sourcesapi.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -19,7 +21,8 @@ public class SourceUpload {
         return id;
     }
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     @OrderBy("idx")
     private List<SourceUploadFile> sourceFiles;
 
@@ -44,7 +47,8 @@ public class SourceUpload {
         this.ocrResults = ocrResults;
     }
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     @OrderBy("page")
     private List<UploadConvertedFile> convertedFiles;
 
