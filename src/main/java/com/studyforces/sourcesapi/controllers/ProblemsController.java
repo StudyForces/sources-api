@@ -5,6 +5,7 @@ import com.studyforces.sourcesapi.models.Problem;
 import com.studyforces.sourcesapi.repositories.OCRResultRepository;
 import com.studyforces.sourcesapi.repositories.ProblemRepository;
 import com.studyforces.sourcesapi.requests.ProblemUpdateRequest;
+import com.studyforces.sourcesapi.services.CoreService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -23,11 +24,14 @@ public class ProblemsController {
 
     private final ProblemRepository problemRepository;
     private final OCRResultRepository ocrResultRepository;
+    private final CoreService coreService;
 
     ProblemsController(ProblemRepository problemRepository,
-                       OCRResultRepository ocrResultRepository) {
+                       OCRResultRepository ocrResultRepository,
+                       CoreService coreService) {
         this.problemRepository = problemRepository;
         this.ocrResultRepository = ocrResultRepository;
+        this.coreService = coreService;
     }
 
     @GetMapping
@@ -43,6 +47,13 @@ public class ProblemsController {
     @GetMapping("/{id}")
     public Problem findById(@PathVariable Long id) {
         return problemRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @PostMapping("/{id}/syncToCore")
+    public Problem syncToCore(@PathVariable Long id) {
+        Problem problem = problemRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        coreService.syncProblem(problem);
+        return problem;
     }
 
     @GetMapping("/{id}/ocrResults")
@@ -91,6 +102,10 @@ public class ProblemsController {
         problem = problemRepository.save(problem);
         Problem finalProblem = problem;
         ocrResultRepository.saveAll(ocrResults.stream().peek(r -> r.setProblem(finalProblem)).toList());
+
+        if (problem.getCoreId() != null) {
+            coreService.syncProblem(problem);
+        }
 
         return problem;
     }

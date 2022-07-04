@@ -14,7 +14,7 @@ eureka:
 spring:
   cloud:
     stream:
-      function.definition: textSupplier;textSink;formulaSupplier;formulaSink;sourceMetadataRequestSupplier;sourceMetadataSink;sourceConvertRequestSupplier;sourceConversionSink
+      function.definition: textSupplier;textSink;formulaSupplier;formulaSink;sourceMetadataRequestSupplier;sourceMetadataSink;sourceConvertRequestSupplier;sourceConversionSink;coreApiSupplier;coreApiSink
       bindings:
         textSink-in-0:
           destination: ocr-text-result
@@ -32,6 +32,10 @@ spring:
           destination: source-convert-requests
         sourceConversionSink-in-0:
           destination: source-convert-results
+        coreApiSupplier-out-0:
+          destination: sources-to-core
+        coreApiSink-in-0:
+          destination: core-to-sources
   minio:
     bucket: sources
   application:
