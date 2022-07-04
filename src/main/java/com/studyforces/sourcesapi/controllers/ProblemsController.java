@@ -35,6 +35,11 @@ public class ProblemsController {
         return problemRepository.findAll(pageable);
     }
 
+    @GetMapping("/search")
+    public Page<Problem> searchById(@RequestParam String id, @NotNull final Pageable pageable) {
+        return problemRepository.searchById(id, pageable);
+    }
+
     @GetMapping("/{id}")
     public Problem findById(@PathVariable Long id) {
         return problemRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
