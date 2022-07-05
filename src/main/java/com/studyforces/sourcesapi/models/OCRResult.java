@@ -1,6 +1,7 @@
 package com.studyforces.sourcesapi.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.studyforces.sourcesapi.support.JpaConverterJson;
 
 import javax.persistence.*;
 import java.util.List;
@@ -31,6 +32,7 @@ public class OCRResult {
     }
 
     @Lob
+    @Convert(converter = JpaConverterJson.class)
     private Object data;
 
     public Object getData() {

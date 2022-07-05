@@ -1,6 +1,9 @@
 package com.studyforces.sourcesapi.models;
 
+import com.studyforces.sourcesapi.support.JpaConverterJson;
+
 import javax.persistence.Basic;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 
@@ -18,6 +21,7 @@ public class ProblemAttachment {
     }
 
     @Lob
+    @Convert(converter = JpaConverterJson.class)
     private Object metadata;
 
     public Object getMetadata() {
