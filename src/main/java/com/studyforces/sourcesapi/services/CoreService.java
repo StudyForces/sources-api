@@ -45,14 +45,22 @@ public class CoreService {
     @Bean
     Consumer<ProblemSyncMessage> coreApiSink() {
         return msg -> {
-            Problem problem = problemRepository.findById(msg.getSourcesId()).orElse(new Problem());
+            Problem problem;
+            if (msg.getSourcesId() != null) {
+                problem = problemRepository.findById(msg.getSourcesId()).orElse(new Problem());
+            } else {
+                problem = new Problem();
+            }
             problem.setCoreId(msg.getCoreId());
             problem.setType(msg.getType());
             problem.setProblem(msg.getProblem());
             problem.setSolution(msg.getSolution());
             problem.setSolverMetadata(msg.getSolverMetadata());
             problem.setAttachments(msg.getAttachments());
-            problemRepository.save(problem);
+            problem = problemRepository.save(problem);
+            if (msg.getSourcesId() == null) {
+                syncProblem(problem);
+            }
         };
     }
 
