@@ -1,6 +1,8 @@
 package com.studyforces.sourcesapi.services;
 
+import com.studyforces.sourcesapi.models.OCRResult;
 import com.studyforces.sourcesapi.models.Problem;
+import com.studyforces.sourcesapi.models.ProblemAttachment;
 import com.studyforces.sourcesapi.repositories.ProblemRepository;
 import com.studyforces.sourcesapi.services.messages.core.ProblemSyncMessage;
 import com.studyforces.sourcesapi.services.messages.ocr.OCRDataText;
@@ -9,10 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Service
 public class CoreService {
@@ -56,7 +62,21 @@ public class CoreService {
             problem.setProblem(msg.getProblem());
             problem.setSolution(msg.getSolution());
             problem.setSolverMetadata(msg.getSolverMetadata());
-            problem.setAttachments(msg.getAttachments());
+
+            // Merge Attachments
+            List<ProblemAttachment> prevAttachments = problem.getAttachments();
+            if (prevAttachments == null) {
+                prevAttachments = new ArrayList<>();
+            }
+            Map<String, ProblemAttachment> prevAtMap = prevAttachments.stream().collect(Collectors.toMap(ProblemAttachment::getFileName, i -> i));
+            List<ProblemAttachment> mergedAttachments = msg.getAttachments().stream().peek(attachment -> {
+                if (prevAtMap.containsKey(attachment.getFileName())) {
+                    attachment.setMetadata(prevAtMap.get(attachment.getFileName()).getMetadata());
+                }
+            }).toList();
+
+            problem.setAttachments(mergedAttachments);
+
             problem = problemRepository.save(problem);
             if (msg.getSourcesId() == null) {
                 syncProblem(problem);
