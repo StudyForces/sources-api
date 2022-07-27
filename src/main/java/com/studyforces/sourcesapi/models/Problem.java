@@ -1,6 +1,7 @@
 package com.studyforces.sourcesapi.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.studyforces.sourcesapi.models.solve.ProblemSolve;
 import com.studyforces.sourcesapi.support.JpaConverterJson;
 
 import javax.persistence.*;
@@ -56,15 +57,14 @@ public class Problem {
         this.solution = solution;
     }
 
-    @Lob
-    @Convert(converter = JpaConverterJson.class)
-    private Object solverMetadata;
+    @Embedded
+    private ProblemSolve solverMetadata;
 
-    public Object getSolverMetadata() {
+    public ProblemSolve getSolverMetadata() {
         return solverMetadata;
     }
 
-    public void setSolverMetadata(Object solverMetadata) {
+    public void setSolverMetadata(ProblemSolve solverMetadata) {
         this.solverMetadata = solverMetadata;
     }
 
